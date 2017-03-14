@@ -4,15 +4,16 @@ from tkinter import filedialog
 from tkinter import messagebox
 """
 
-"""
-For porting to Python3, just un-document the import statements and then
-"find and replace" manually.
-"""
+
+# For porting to Python3, just un-document the import statements and then
+# "find and replace" manually.
+
 
 """
 regex - sudo apt-get install regex  - https://pypi.python.org/pypi/regex
 tkinter - sudo apt-get install python-tk  - http://www.tkdocs.com/tutorial/install.html
 python2.7 - sudo apt-get install python2.7 - https://www.python.org/downloads/ (Download python 2.7.*)
+requests - https://pypi.python.org/pypi/requests/
 """
 
 from Tkinter import *
@@ -30,10 +31,8 @@ import re
 import regex
 import requests
 
-"""
-These are Basic File functions - New, Open, Save.
-"""
 
+#These are Basic File functions - New, Open, Save.
 
 def new() :
     os.system("python " + current_dir + "/" + os.path.basename(__file__))
@@ -51,9 +50,9 @@ def save() :
     content = text.get(1.0, END)
     path.write(content.strip())
 
-"""
-These are basic formatting tools for general usage - Bold, Italic, Underline.
-"""
+
+# These are basic tools for general formatting - Bold, Italic, Underline.
+# These modify the formatting of 'selected text'.
 
 def bold() :
     s = text.selection_get()
@@ -111,6 +110,8 @@ def underline() :
     except :
         pass
 
+# Rename the file :- First select the original file from the dialog box, then provide the name of the new file. 
+
 def rename() :
     directory = current_dir
     opts = {}
@@ -118,6 +119,8 @@ def rename() :
     orgfilename = tkFileDialog.Open(**opts).show()
     newfilename = tkSimpleDialog.askstring("Replace", "New File name?")
     os.rename(orgfilename, directory + "/" + newfilename)
+
+# Ask for confirmation before closing the file.    
 
 def close() :
     ans = tkMessageBox.askquestion(title = "Save File", message = "Would you like to save this file?")
@@ -152,9 +155,7 @@ def delete_all() :
     text.delete(1.0, END)
 
 
-"""
-Edit functions - Find, Find & Replace"
-"""
+# Edit functions - Find, Find & Replace.
 
 def find() :
     start = 1.0
@@ -203,9 +204,8 @@ def find_replace() :
 
         pos = text.search(string, start, stopindex=END)
 
-"""
-To reduce the verbosity, these functions are introduced to reduce the repetitive work.
-"""
+
+#To reduce the verbosity, these functions are introduced to reduce the repetitive work.
 
 def add_menu(name, function_call) :
     menu.add_cascade(label = name, menu = function_call)
@@ -229,26 +229,30 @@ def dict_() :
     string = text.selection_get()
     webbrowser.open("http://www.dictionary.com/browse/" + string + "?s=t")
 
-"""
-Spell-checking all document.
-"""
+
+#Spell-checking all document.
 
 def spell_check_all() :
 
     """
-    First text is imporved so that extra spaces in between words and at start of lines can be removed.
+    First text is improved so that extra spaces in between words and at start of lines can be removed.
     Then since 'escape-characters' like new-line couldn't be accomodated as a single character themselves,
     all new-line chars are replaced by some rarely used char (This was done so as to update the 'pos' variable
     whenever a new-line is encountered - Refer definition of 'pos' variable in 'find' function).
-    Next, the words are searched in the dictionary maintained (by exporting dictionary from
+    Next, the words are searched in the dictionary maintained (by exporting inbuilt dictionary from
     "Linux - /usr/share/dict") and are appropriately marked or are left un-marked.
     """
 
     improve_text()
+    
+    # Convert whole text into lowercase characters too, as to remove any discrepancy betwee word in dictionary and
+    # that used in text.
 
     string = text.get(1.0, END)
     string = string.strip().replace('\n', ' ~ ')
     string = string.lower()
+    
+    # Split the string into words - which are going to be looked-up in dictionary.
 
     start = 1.0
     string = string.split()
@@ -256,6 +260,11 @@ def spell_check_all() :
     p = 0
 
     for i in xrange(l) :
+        
+        # For first word, start variable is already initialised, so no need to repeat it.
+        # If '~' is encountered, that means we have to move to a new line.
+        # Finally, get the word from the relevant indices calculated.
+        
         if i :
             start = str(start)[:2] + str(p)
         if string[i] == '~' :
@@ -273,6 +282,9 @@ def spell_check_all() :
 
         word = regex.sub(ur"\p{P}+", "", word)
         p += len(string[i]) + 1
+        
+        # If word is in _dict, the spelling is correct.
+        # Else, change the foreground of the word to red.
 
         try :
             if (_dict[word]) :
@@ -282,17 +294,14 @@ def spell_check_all() :
             text.configure(state = "normal")
             text.tag_add("spell", start , end)
 
-"""
-GNU-Aspell project was used to predict the relevant string prediction nearest to the selected word.
-"""
+
+#GNU-Aspell project was used to predict the relevant string prediction nearest to the selected word.
 
 def spell_suggest() :
     string = text.selection_get()
     webbrowser.open("http://suggest.aspell.net/index.php?word=" + string + "&spelling=american&dict=normal&sugmode=slow")
 
-"""
-General Document statistics, which sometimes is tobe adhered to.
-"""
+#General Document statistics, which sometimes is to be adhered to.
 
 def docu_stats() :
     string = text.get(1.0, END)
@@ -308,6 +317,8 @@ def docu_stats() :
     label3 = Label(toplevel, text = lines, height = 0, width = 20)
     label3.pack()
 
+# The Help-text - To tell what this text editor is all about.
+  
 def help_text() :
     string1 = "A Tkinter based text editor implemented to increase the productiveness in content writing work I had been generally involved in."
     string2 = " Along with basic file functions, features like Spell-check, Synonym checker, Meaning look up, formatting options were added."
@@ -317,15 +328,19 @@ def help_text() :
     label2 = Label(toplevel, text = string2, height = 0, width = 75, wraplength = 500)
     label2.pack()
 
+# Link to my Github and Linkedin pages.
+    
 def git(event) :
     webbrowser.open("https://github.com/prnvdixit")
 
 def linkedin(event) :
     webbrowser.open("https://in.linkedin.com/in/prnvdixit")
 
+# The About-text - To tell about me.
+    
 def about() :
     toplevel = Toplevel()
-    string1 = "Developed By :- Pranav Dixit"
+    string1 = "Developed By :- Pranav Dixit, Undergrad at IIT (ISM), Dhanbad"
     string2 = "GitHub"
     string3 = "LinkedIn"
     label1 = Label(toplevel, text = string1, height = 0, width = 50, wraplength = 500)
@@ -337,33 +352,37 @@ def about() :
     label3.pack()
     label3.bind("<Button-1>", linkedin)
 
-"""
-Improving the text so that extra spaces in between words and at start of lines can be removed.
-"""
+# Improving the text so that extra (more than one) spaces in between words and at start of lines can be removed.
 
 def improve_text() :
+        
     string = text.get(1.0, END)
     delete_all()
+        
     string = re.sub(' +',' ',string)
     lines = string.strip().split("\n")
     l = len(lines)
+        
     for i in xrange(l):
         lines[i] = lines[i].strip()
+        
     string = "\n".join(lines)
     text.insert(1.0, string)
 
 def best_match() :
     word = text.selection_get()
     res = requests.get('http://suggest.aspell.net/index.php?word='+ word +'&spelling=american&dict=normal&sugmode=slow')
-
+        
     try :
         res.raise_for_status()
     except Exception as exc:
         print "There was a problem : %s" % (exc)
 
     t = res.text
-    r = t.find('href="http://www.merriam-webster.com/dictionary/')
-    q = t[r+48 : r+148]
+    string = 'href="http://www.merriam-webster.com/dictionary/'
+    l = len(string)
+    r = t.find(string)
+    q = t[r+l : r+l+100]
 
     for i in xrange(100) :
         if q[i] == '"' :
@@ -371,6 +390,7 @@ def best_match() :
 
     print q[:i]
 
+    
 words = open("/usr/share/dict/american-english")
 words = [word.strip() for word in words]
 words = [word.lower() for word in words]
@@ -379,7 +399,7 @@ _dict = {}
 
 for word in words :
     _dict[word] = 1
-
+    
 for c in string.ascii_lowercase :
     del _dict[c]
 
@@ -390,6 +410,7 @@ master = Tk()
 master.title("Editor")
 master.geometry("840x480+300+400")
 
+
 text = ScrolledText(master, width = 400, height = 380, wrap = 'word', font = ("Verdana", 10), highlightthickness = 0, bd = 2, undo = True, pady = 2, padx = 3)
 
 text.pack(fill = Y, expand = 1)
@@ -397,6 +418,8 @@ text.focus_set()
 
 menu = Menu(master)
 master.config(menu = menu)
+
+# Creating Menus to work with.
 
 file_menu = Menu(menu)
 edit_menu = Menu(menu)
@@ -423,7 +446,7 @@ n = len(command_menu)
 
 global current_dir
 current_dir = os.path.dirname(os.path.abspath(__file__))
-"""cd /home/pranav/Desktop/ """
+# cd /home/pranav/Desktop/
 
 for i in xrange(l) :
     add_menu(menu_name[i], menu_list[i])
