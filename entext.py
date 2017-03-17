@@ -444,10 +444,17 @@ master.title("Editor")
 master.geometry("840x480+300+400")
 
 
+global current_dir
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# cd /home/pranav/Desktop/
+
+# Icon of the Editor window
+image = PhotoImage(file='entext.gif')
+master.tk.call('wm', 'iconphoto', master._w, image)
+
+
 # To enable wrapping of text in the horizontal direction, as well as scrolling in the vertical direction.
-
 text = ScrolledText(master, width = 400, height = 380, wrap = 'word', font = ("Verdana", 10), highlightthickness = 0, bd = 2, undo = True, pady = 2, padx = 3)
-
 
 text.pack(fill = Y, expand = 1)
 text.focus_set()
@@ -486,10 +493,6 @@ drop_list = [[("New", new), ("Open", open_file), (0,), ("Close", close), ("Save"
 
 l = len(menu_list)
 n = len(command_menu)
-
-global current_dir
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# cd /home/pranav/Desktop/
 
 for i in xrange(l) :
     add_menu(menu_name[i], menu_list[i])
