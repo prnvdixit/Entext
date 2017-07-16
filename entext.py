@@ -14,6 +14,7 @@ regex - sudo -H pip install regex  - https://pypi.python.org/pypi/regex
 tkinter - sudo apt-get install python-tk  - http://www.tkdocs.com/tutorial/install.html
 python2.7 - sudo apt-get install python2.7 - https://www.python.org/downloads/ (Download python 2.7.*)
 requests - sudo -H pip install requests - https://pypi.python.org/pypi/requests/
+pyttsx - sudo -H pip2 install pyttsx - https://pypi.python.org/pypi/pyttsx
 """
 
 from Tkinter import *
@@ -30,7 +31,7 @@ import string
 import re
 import regex
 import requests
-
+import pyttsx
 
 #These are Basic File functions - New, Open, Save.
 
@@ -417,6 +418,11 @@ def best_match() :
 
     print q[: i]
 
+def speech_aid() :
+    text_to_speak = text.selection_get()
+    text_speak_engine = pyttsx.init()
+    text_speak_engine.say(text_to_speak)
+    text_speak_engine.runAndWait()
     
 # Creating a dictionary (The python dictionary - hashed one) out of the inbuilt one.
     
@@ -476,10 +482,10 @@ spell_menu = Menu(menu)
 # Command-menus are those menus which are run directly on clicked.
 
 menu_name = ["File", "Edit", "Clip Board", "Formatting", "Help", "Spell suggest"]
-command_menu_name = ["Synonym", "Meaning", "Spell-Check", "Document Statistics", "Improve Text"]
+command_menu_name = ["Synonym", "Meaning", "Spell-Check", "Document Statistics", "Improve Text", "Speech-Aid"]
 
 menu_list = [file_menu, edit_menu, clip_util, format_menu, help_menu, spell_menu]
-command_menu = [syn, dict_, spell_check_all, docu_stats, improve_text]
+command_menu = [syn, dict_, spell_check_all, docu_stats, improve_text, speech_aid]
 
 
 # Drop-down menu list corresponding to every menu_name.
