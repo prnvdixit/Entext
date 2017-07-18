@@ -33,6 +33,8 @@ import regex
 import requests
 import pyttsx
 
+import morder
+
 #These are Basic File functions - New, Open, Save.
 
 def new() :
@@ -423,7 +425,36 @@ def speech_aid() :
     text_speak_engine = pyttsx.init()
     text_speak_engine.say(text_to_speak)
     text_speak_engine.runAndWait()
+
+def encrypt_morse() :
+    text_to_encrypt = text.get(1.0, END)
+    text_to_encrypt = text_to_encrypt.strip().split("\n")
+    delete_all()
+
+    encrypted_text = ""
+
+    for decrypted_text in text_to_encrypt :
+        encrypted_text += morder.morse_encryptor(decrypted_text)
+        if decrypted_text != text_to_encrypt[-1] :
+            encrypted_text += "\n"
     
+    text.insert(1.0, encrypted_text)
+
+def decrypt_morse() :
+    text_to_decrypt = text.get(1.0, END)
+    text_to_decrypt = text_to_decrypt.strip().split("\n")
+    delete_all()
+
+    decrypted_text = ""
+
+    for encrypted_text in text_to_decrypt :
+        decrypted_text += morder.morse_decryptor(encrypted_text)
+        if encrypted_text != text_to_decrypt[-1] :
+            decrypted_text += "\n"
+    
+    text.insert(1.0, decrypted_text)
+
+
 # Creating a dictionary (The python dictionary - hashed one) out of the inbuilt one.
     
 words = open("/usr/share/dict/american-english")
@@ -447,7 +478,7 @@ _dict['i'] = 1
 
 master = Tk()
 master.title("Editor")
-master.geometry("840x480+300+400")
+master.geometry("1020x640+300+400")
 
 
 global current_dir
@@ -476,15 +507,16 @@ clip_util = Menu(menu)
 format_menu = Menu(menu)
 help_menu = Menu(menu)
 spell_menu = Menu(menu)
+morse_translate = Menu(menu)
 
 
 # Normal-menus are those which yield a drop-down menu when clicked.
 # Command-menus are those menus which are run directly on clicked.
 
-menu_name = ["File", "Edit", "Clip Board", "Formatting", "Help", "Spell suggest"]
+menu_name = ["File", "Edit", "Clip Board", "Formatting", "Help", "Spell suggest", "Morse Translator"]
 command_menu_name = ["Synonym", "Meaning", "Spell-Check", "Document Statistics", "Improve Text", "Speech-Aid"]
 
-menu_list = [file_menu, edit_menu, clip_util, format_menu, help_menu, spell_menu]
+menu_list = [file_menu, edit_menu, clip_util, format_menu, help_menu, spell_menu, morse_translate]
 command_menu = [syn, dict_, spell_check_all, docu_stats, improve_text, speech_aid]
 
 
@@ -495,7 +527,9 @@ drop_list = [[("New", new), ("Open", open_file), (0,), ("Close", close), ("Save"
         [("Cut", cut), ("Copy", copy), ("Paste", paste), (0,), ("Select All", select_all)], \
         [("Bold", bold), ("Italic", italic), ("Underline", underline)], \
         [("Help", help_text), ("About", about)], \
-        [("Get best match", best_match), ("Get all matches", spell_suggest)]]
+        [("Get best match", best_match), ("Get all matches", spell_suggest)], \
+        [("Encrypt to Morse Code", encrypt_morse), ("Decrypt from Morse", decrypt_morse)], \
+        ]
 
 l = len(menu_list)
 n = len(command_menu)
